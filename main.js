@@ -10,7 +10,8 @@ class NotJS {
       'zh-cn': {
         'notjs.extensionName': 'Not.js',
         'notjs.parseJSON': '解析 [json]',
-        'notjs.asString': '[json] 作为 string',
+        'notjs.asString': '[json] 作为字符串',
+        'notjs.asNumber': '[json] 作为数字',
         'notjs.getType': '[json] 的类型'
         // 'ArkosExt.stringEquality': '(区分大小写)[ONE]=[TWO]',
         // 'ArkosExt.directionFromAtoB':
@@ -27,6 +28,7 @@ class NotJS {
         'notjs.extensionName': 'Not.js',
         'notjs.parseJSON': 'parse [json]',
         'notjs.asString': '[json] as string',
+        'notjs.asNumber': '[json] as number',
         'notjs.getType': 'type of [json]'
         // 'ArkosExt.stringEquality': '(case sensitive)[ONE]=[TWO]',
         // 'ArkosExt.directionFromAtoB':
@@ -91,7 +93,16 @@ class NotJS {
           }
         },
         {
-
+          // 变为 number
+          opcode: 'asNumber',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.asNumber'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '0'
+            }
+          }
         },
         {
           // 取类型
@@ -268,6 +279,7 @@ class NotJS {
       ]
     }
   }
+  // TODO: asNumber
   /**
    * 解析 JSON 内部用到的方法。
    * @param {string} json 
