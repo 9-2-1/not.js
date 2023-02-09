@@ -1,3 +1,36 @@
+class Cache {
+	/**
+	 * 构造 cache
+	 */
+	constructor(size) {
+		if (typeof size != 'number') throw Error('size is number')
+		if (size <= 0) throw Error('size must be greater than 0')
+		this._size = size
+		this._curridx = 0
+		this._container = new Array(size)
+	}
+	get(key) {
+		for (const item of this._container) {
+			if (item[0] == key) return item[1]
+		}
+	}
+	set(key, value) {
+		for (const item of this._container) {
+			if (item[0] == key) {
+				item[1] = value
+				return
+			}
+		}
+		if (this._curridx == this._size - 1) {
+			this._curridx = 0 // drop cache
+		}
+		this._container[this._curridx] = [key, value]
+		this._curridx++
+	}
+	get length() {
+		return this._size
+	}
+}
 class NotJS {
   /**
    * 构造插件。
