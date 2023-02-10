@@ -1,35 +1,58 @@
-class Cache {
-	/**
-	 * 构造 cache
-	 */
-	constructor(size) {
-		if (typeof size != 'number') throw Error('size is number')
-		if (size <= 0) throw Error('size must be greater than 0')
-		this._size = size
-		this._curridx = 0
-		this._container = new Array(size)
-	}
-	get(key) {
-		for (const item of this._container) {
-			if (item[0] == key) return item[1]
-		}
-	}
-	set(key, value) {
-		for (const item of this._container) {
-			if (item[0] == key) {
-				item[1] = value
-				return
-			}
-		}
-		if (this._curridx == this._size - 1) {
-			this._curridx = 0 // drop cache
-		}
-		this._container[this._curridx] = [key, value]
-		this._curridx++
-	}
-	get length() {
-		return this._size
-	}
+class JSONCache {
+  /**
+   * 构造 Cache。
+   * @param {number} size
+   */
+  constructor(size) {
+    if (typeof size != 'number') throw Error('size must be number')
+    if (size <= 0) throw Error('size must be greater than 0')
+    if (!Number.isInteger(size)) throw Error('size must be a integer')
+    this._size = size
+    this._container = new Map()
+  }
+  /**
+   * 获得 key 的缓存。
+   * @param {string} key key。
+   * @returns {unknown?} 返回 undefined 代表未命中缓存。
+   */
+  get(key) {
+    return this._container.get(key)
+  }
+  /**
+   * 更新 key。
+   * @param {string} key key。
+   * @param {unknown} value key 对应的值。
+   * @return {[string, unknown]} [0] 键; [1] 值
+   */
+  set(key, value) {
+    if (value === undefined) return
+    if (this._container.has(key)) return this.get(key)
+    if (this._container.size == this._size)
+      this._container.delete(this._container.keys().next().value) // drop cache
+    this._container.set(key, value)
+    return [key, value]
+  }
+  /**
+   * 替换 key。
+   * @param {string} oldkey 旧 key。
+   * @param {string} newkey 新 key。
+   * @param {unknown} value 值。
+   * @return {[string, unknown]} [0] 键; [1] 值
+   */
+  replace(oldkey, newkey, value) {
+    if (value === undefined) return
+    if (this._container.has(oldkey)) {
+      this._container.delete(oldkey)
+      this._container.set(newkey, value)
+    } else return this.set(newkey, value)
+  }
+  /**
+   * 获得 cache 的大小。
+   * @returns {number} cache 的大小。
+   */
+  get size() {
+    return this._size
+  }
 }
 class NotJS {
   /**
@@ -37,43 +60,44 @@ class NotJS {
    * @param {unknown} runtime 官方未给出解释。
    */
   constructor(runtime) {
-    this.cache = {}
+    this.cache = new JSONCache(50)
     this.runtime = runtime
     this._formatMessage = runtime.getFormatMessage({
       'zh-cn': {
         'notjs.extensionName': 'Not.js',
+        'notjs.title.parse': '解析',
         'notjs.parseJSON': '解析 [json]',
+        'notjs.title.type': '类型',
         'notjs.asString': '[json] 作为字符串',
         'notjs.asNumber': '[json] 作为数字',
-        'notjs.getType': '[json] 的类型'
-        // 'ArkosExt.stringEquality': '(区分大小写)[ONE]=[TWO]',
-        // 'ArkosExt.directionFromAtoB':
-        //   '点x1:[X1]y1:[Y1]朝向点x2:[X2]y2:[Y2]的方向',
-        // 'ArkosExt.differenceBetweenDirections': '由方向1[a]到方向2[b]的角度差',
-        // 'ArkosExt.distance': '点x1:[X1]y1:[Y1]到点x2:[X2]y2:[Y2]的距离',
-        // 'ArkosExt.searchString':
-        //   '在[str]中查找[substr]的位置(从位置[pos]开始找)',
-        // 'ArkosExt.insertString': '在[str]的第[pos]个字符前插入[substr]',
-        // 'ArkosExt.replaceString':
-        //   '将[str]中的第[start]个到第[end]个字符,替换为[substr]'
+        'notjs.asBoolean': '[json] 作为布尔值',
+        'notjs.getType': '[json] 的类型',
+        'notjs.title.member': '成员',
+        'notjs.getMember': '[json] 的成员 [member]',
+        'notjs.setMember': '设定 [json] 的成员 [member] 为 [value]',
+        'notjs.removeMember': '删除 [json] 的成员 [member]',
+        'notjs.exists': '[json] 存在成员 [member]?',
+        'notjs.length': '[json] 的长度',
+        'notjs.keys': '[json] 的全部键',
+        'notjs.values': '[json] 的全部值'
       },
       en: {
         'notjs.extensionName': 'Not.js',
+        'notjs.title.parse': 'Parse',
         'notjs.parseJSON': 'parse [json]',
+        'notjs.title.type': 'Type',
         'notjs.asString': '[json] as string',
         'notjs.asNumber': '[json] as number',
-        'notjs.getType': 'type of [json]'
-        // 'ArkosExt.stringEquality': '(case sensitive)[ONE]=[TWO]',
-        // 'ArkosExt.directionFromAtoB':
-        //   'direction from x1:[X1]y1:[Y1]to x2:[X2]y2:[Y2]',
-        // 'ArkosExt.differenceBetweenDirections':
-        //   'direction[b] minus direction[a]',
-        // 'ArkosExt.distance':
-        //   'distance between x1:[X1]y1:[Y1]and x2:[X2]y2:[Y2]',
-        // 'ArkosExt.searchString': 'position of[substr]in[str],start from[pos]',
-        // 'ArkosExt.insertString': 'insert[substr]at[pos]of[str]',
-        // 'ArkosExt.replaceString':
-        //   'replace from[start]to[end]of[str],with[substr]'
+        'notjs.asBoolean': '[json] as boolean',
+        'notjs.getType': 'type of [json]',
+        'notjs.title.member': 'Member',
+        'notjs.getMember': 'get member [member] of [json]',
+        'notjs.setMember': 'set member [member] of [json] to [value]',
+        'notjs.removeMember': 'remove member [member] of [json]',
+        'notjs.exists': 'member [member] exists in [json]?',
+        'notjs.length': 'length of [json]',
+        'notjs.keys': 'keys of [json]',
+        'notjs.values': 'values of [json]'
       }
     })
   }
@@ -99,7 +123,8 @@ class NotJS {
       name: this.formatMessage('notjs.extensionName') /* 拓展名 */,
       color1: '#8A8A8A' /* 颜色 */,
       blocks: [
-        // 解析类
+        // 解析
+        `---${this.formatMessage('notjs.title.parse')}`,
         {
           // 解析 json
           opcode: 'parseJSON',
@@ -112,7 +137,8 @@ class NotJS {
             }
           }
         },
-        // 类型类
+        // 类型
+        `---${this.formatMessage('notjs.title.type')}`,
         {
           // 变为 string
           opcode: 'asString',
@@ -138,6 +164,18 @@ class NotJS {
           }
         },
         {
+          // 变为 boolean
+          opcode: 'asBoolean',
+          blockType: 'Boolean',
+          text: this.formatMessage('notjs.asBoolean'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: 'true'
+            }
+          }
+        },
+        {
           // 取类型
           opcode: 'getType',
           blockType: 'reporter',
@@ -148,205 +186,190 @@ class NotJS {
               defaultValue: '{}'
             }
           }
+        },
+        `---${this.formatMessage('notjs.title.member')}`,
+        {
+          // 获得成员
+          opcode: 'getMember',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.getMember'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            },
+            member: {
+              type: 'string',
+              defaultValue: 'a'
+            }
+          }
+        },
+        {
+          // 设定成员
+          opcode: 'setMember',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.setMember'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            },
+            member: {
+              type: 'string',
+              defaultValue: 'a'
+            },
+            value: {
+              type: 'string',
+              defaultValue: '{}'
+            }
+          }
+        },
+        {
+          // 删除成员
+          opcode: 'removeMember',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.removeMember'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            },
+            member: {
+              type: 'string',
+              defaultValue: 'a'
+            }
+          }
+        },
+        {
+          // 判断成员是否存在
+          opcode: 'exists',
+          blockType: 'Boolean',
+          text: this.formatMessage('notjs.exists'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            },
+            member: {
+              type: 'string',
+              defaultValue: 'a'
+            }
+          }
+        },
+        {
+          // 获得长度
+          opcode: 'length',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.length'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            }
+          }
+        },
+        {
+          // 获得键
+          opcode: 'keys',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.keys'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            }
+          }
+        },
+        {
+          // 获得值
+          opcode: 'values',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.values'),
+          arguments: {
+            json: {
+              type: 'string',
+              defaultValue: '{}'
+            }
+          }
         }
-        // {
-        //   // 判断相等（区分大小写）
-        //   opcode: 'strictlyEquals',
-        //   blockType: 'Boolean',
-        //   text: this.formatMessage('ArkosExt.stringEquality'),
-        //   arguments: {
-        //     ONE: {
-        //       type: 'string',
-        //       defaultValue: 'A'
-        //     },
-        //     TWO: {
-        //       type: 'string',
-        //       defaultValue: 'a'
-        //     }
-        //   }
-        // },
-        // {
-        //   // 计算点A到点B的方向
-        //   opcode: 'getDirFromAToB',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.directionFromAtoB'),
-        //   arguments: {
-        //     X1: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     Y1: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     X2: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     Y2: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     }
-        //   }
-        // },
-        // {
-        //   // 计算角b-角a的角度差
-        //   opcode: 'differenceBetweenDirections',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.differenceBetweenDirections'),
-        //   arguments: {
-        //     a: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     b: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     }
-        //   }
-        // },
-        // {
-        //   // 两点距离
-        //   opcode: 'disFromAToB',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.distance'),
-        //   arguments: {
-        //     X1: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     Y1: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     X2: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     Y2: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     }
-        //   }
-        // },
-        // {
-        //   // 查找子字符串，从pos开始
-        //   opcode: 'indexof',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.searchString'),
-        //   arguments: {
-        //     str: {
-        //       type: 'string',
-        //       defaultValue: 'banana'
-        //     },
-        //     substr: {
-        //       type: 'string',
-        //       defaultValue: 'na'
-        //     },
-        //     pos: {
-        //       type: 'number',
-        //       defaultValue: 1
-        //     }
-        //   }
-        // },
-        // {
-        //   // 在字符串中插入子字符串
-        //   opcode: 'insertStr',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.insertString'),
-        //   arguments: {
-        //     str: {
-        //       type: 'string',
-        //       defaultValue: 'ac'
-        //     },
-        //     substr: {
-        //       type: 'string',
-        //       defaultValue: 'b'
-        //     },
-        //     pos: {
-        //       type: 'number',
-        //       defaultValue: 2
-        //     }
-        //   }
-        // },
-        // {
-        //   // 替换字符串中的从..到..的字符串
-        //   opcode: 'replaceStr',
-        //   blockType: 'reporter',
-        //   text: this.formatMessage('ArkosExt.replaceString'),
-        //   arguments: {
-        //     str: {
-        //       type: 'string',
-        //       defaultValue: 'ABCDEF'
-        //     },
-        //     substr: {
-        //       type: 'string',
-        //       defaultValue: 'XX'
-        //     },
-        //     start: {
-        //       type: 'number',
-        //       defaultValue: 3
-        //     },
-        //     end: {
-        //       type: 'number',
-        //       defaultValue: 4
-        //     }
-        //   }
-        // },
-        // {
-        //   //朝..方向旋转..角度
-        //   opcode: 'turnDegreesToDir',
-        //   blockType: 'command',
-        //   text: 'turn[degree]degrees toward direction[dir]',
-        //   arguments: {
-        //     degree: {
-        //       type: 'number',
-        //       defaultValue: 0
-        //     },
-        //     dir: {
-        //       type: 'angle',
-        //       defaultValue: 0
-        //     }
-        //   }
-        // }
       ]
     }
   }
-  // TODO: asNumber
   /**
    * 解析 JSON 内部用到的方法。
-   * @param {string} json 
-   * @returns {unknown[]} [0] 解析后的 json; [1] 解析后的字符串
+   * @param {string} json
+   * @returns {[string?, unknown?]} [0] 解析后的字符串; [1] 解析后的 json
    */
   _parseJSON(json) {
-    const v = JSON.parse(json)
-    const str = JSON.stringify(v)
-    this.cache[str] = v
-    return [v, str]
+    let v = this.cache.get(json)
+    if (v === undefined) {
+      try {
+        const p = JSON.parse(json)
+        return this.cache.set(JSON.stringify(p), p)
+      } catch (_) {
+        return []
+      }
+    }
+    return [json, v]
   }
+  // 解析
   /**
    * 解析 JSON。
    * @param {string} json json。
    * @returns 解析后的字符串。
    */
   parseJSON(args) {
-    return this._parseJSON(args.json)[1]
+    const v = this._parseJSON(args.json)[0]
+    if (v === undefined) return ''
+    return v
   }
+  // 类型
   /**
    * 转换为 string。
    * @param {string} json json。
    * @returns {string} 转换后的 string
    */
   asString(args) {
-    return String(this.cache[args.json] || this._parseJSON(args.json)[0])
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return '' // check
+    if (v == null || ['string', 'boolean', 'number'].includes(typeof v)) {
+      return String(v)
+    } else return JSON.stringify(v)
+  }
+  /**
+   * 转换为 number。
+   * @param {string} json json。
+   * @returns {number} 转换后的 number。
+   */
+  asNumber(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return '' // check
+    if (['boolean', 'number'].includes(typeof v)) {
+      return Number(v)
+    } else return NaN
+  }
+  /**
+   * 转换为 boolean。
+   * @param {string} json json。
+   * @returns {boolean} 转换后的 boolean。
+   */
+  asBoolean(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return '' // check
+    if (['boolean', 'number'].includes(typeof v)) {
+      return Boolean(v)
+    } else if (v == null) {
+      return false
+    } else return v.length != 0
   }
   /**
    * 获得 json 类型。
-   * @param {string} json json。 
+   * @param {string} json json。
    * @returns {string} 类型。
    */
   getType(args) {
-    const v = this.cache[args.json] || this._parseJSON(args.json)[0]
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return '' // check
     if (v == null) {
       return 'null'
     } else if (['string', 'boolean', 'number'].includes(typeof v)) {
@@ -355,85 +378,160 @@ class NotJS {
       return 'array'
     } else return 'object'
   }
-
-  
-  strictlyEquals(args) {
-    // Note strict equality: Inputs must match exactly: in type, case, etc.
-    return args.ONE === args.TWO
-  }
-
-  numGreaterThen(args) {
-    return args.ONE > args.TWO
-  }
-
-  getDirFromAToB(args) {
-    const { X1, X2, Y1, Y2 } = args
-    let a = (Math.atan((X2 - X1) / (Y2 - Y1)) / Math.PI) * 180.0
-    if (Y1 < Y2) return a
-    if (Y1 > Y2) {
-      a += 180
-      if (a > 180.0) a -= 360.0
-      return a
+  // 成员
+  /**
+   * 获得 json 成员。
+   * @param {string} json json。
+   * @param {string} member 成员名。
+   * @returns {string} json 内容。
+   */
+  getMember(args) {
+    const v = this._parseJSON(args.json)
+    if (v.length == 0) return '' // check
+    if (v[1] instanceof Array || typeof v[1] == 'string') {
+      // array
+      const idx = parseInt(args.member)
+      if (v[1][idx] === undefined) return this._parseJSON('null')[0] // check
+      return this._parseJSON(v[1][idx])[0]
+    } else if (v[1] instanceof Object) {
+      // object
+      if (v[1][args.member] === undefined) return this._parseJSON('null')[0] // check
+      return this._parseJSON(v[1][args.member])[0]
+    } else {
+      return v[0]
     }
-    if (X2 > X1) return 90
-    if (X2 < X1) return -90
+  }
+  /**
+   * 设定 json 成员。
+   * @param {string} json json。
+   * @param {string} member 成员名。
+   * @param {string} value 值。
+   * @returns {string} 变更后的 json 内容。
+   */
+  setMember(args) {
+    const v = this._parseJSON(args.json)
+    if (v.length == 0) return '' // check
+    if (v[1] instanceof Array) {
+      const idx = parseInt(args.member)
+      if (isNaN(idx) || idx < 0) return v[0] // check
+      const c = this._parseJSON(args.value)[1]
+      if (c === undefined) return '' // check
+      v[1][idx] = c
+    } else if (v[1] instanceof Object) {
+      // object
+      const c = this._parseJSON(args.value)[1]
+      if (c === undefined) return '' // check
+      v[1][args.member] = c
+    } else {
+      return v[0]
+    }
+    return this.cache.replace(v[0], JSON.stringify(v[1]), v[1])[0]
+  }
+  /**
+   * 删除 json 成员。
+   * @param {string} json json。
+   * @param {string} member 成员名。
+   * @returns {string} 变更后的 json 内容。
+   */
+  removeMember(args) {
+    const v = this._parseJSON(args.json)
+    if (v.length == 0) return '' // check
+    if (v[1] instanceof Array) {
+      const idx = parseInt(args.member)
+      if (v[1][idx] !== undefined) {
+        if (idx == v[1].length - 1) {
+          v[1] = v[1].slice(0, -1)
+        } else if (idx == 0) {
+          v[1] = v[1].slice(1)
+        } else {
+          delete v[idx]
+        }
+      }
+    } else if (v[1] instanceof Object) {
+      // object
+      delete v[1][args.member]
+    } else {
+      return v[0]
+    }
+    return this.cache.replace(v[0], JSON.stringify(v[1]), v[1])[0]
+  }
+  /**
+   * 判断 json 成员是否存在。
+   * @param {string} json json。
+   * @param {string} member member。
+   * @returns {boolean} 是否存在。
+   */
+  exists(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return false // check
+    if (v instanceof Array) {
+      const idx = parseInt(args.member)
+      return v[idx] !== undefined
+    } else if (v instanceof Object) {
+      // object
+      return v[args.member] !== undefined
+    }
+    return false
+  }
+  /**
+   * 获得 json 的长度。
+   * @param {string} json json。
+   * @returns {number} json 长度。
+   */
+  length(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return // check
+    if (v instanceof Object || v instanceof Array || typeof v == 'string') {
+      return v.length
+    } else if (v instanceof Object) {
+      return Object.keys(v).length
+    }
     return NaN
   }
-
-  differenceBetweenDirections(args) {
-    const { a, b } = args
-    let dif = (b - a) % 360
-    if (dif > 180) dif -= 360
-    return dif
-  }
-
-  disFromAToB(args) {
-    const { X1, X2, Y1, Y2 } = args
-    return Math.sqrt((X1 - X2) * (X1 - X2) + (Y1 - Y2) * (Y1 - Y2))
-  }
-
-  indexof(args) {
-    const str = Cast.toString(args.str)
-    const substr = Cast.toString(args.substr)
-    const a = str.indexOf(substr, args.pos - 1)
-    if (a === -1) {
-      return ''
+  /**
+   * 获得 json 的键。
+   * @param {string} json json。
+   * @returns {string} 键。实际上是 JSON Array。
+   */
+  keys(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return // check
+    if (v instanceof Object || v instanceof Array || typeof v == 'string') {
+      const d = Object.keys(v)
+      return this.cache.set(JSON.stringify(d), d)[0]
     }
-    return a + 1
+    return ''
   }
-
-  insertStr(args) {
-    const str = Cast.toString(args.str)
-    const substr = Cast.toString(args.substr)
-    let pos = args.pos - 1
-    if (pos < 0) {
-      pos = 0
+  /**
+   * 获得 json 的值。
+   * @param {string} json json。
+   * @returns {string} 值。实际上是 JSON Array。
+   */
+  values(args) {
+    const v = this._parseJSON(args.json)[1]
+    if (v === undefined) return // check
+    if (v instanceof Object || v instanceof Array || typeof v == 'string') {
+      const d = Object.values(v)
+      return this.cache.set(JSON.stringify(d), d)[0]
     }
-    return str.slice(0, pos) + substr + str.slice(pos)
-  }
-
-  replaceStr(args) {
-    const str = Cast.toString(args.str)
-    const substr = Cast.toString(args.substr)
-    let start = Cast.toNumber(args.start)
-    let end = Cast.toNumber(args.end)
-    if (start > end) {
-      const t = end
-      end = start
-      start = t
-    }
-    if (start < 1) start = 1
-    return str.slice(0, start - 1) + substr + str.slice(end)
-  }
-
-  turnDegreesToDir(args, util) {
-    //
-    // util.target.setDirection(util.target.direction + degrees);
-    console.log('---util-------------\n', util)
-    console.log('---args-------------\n', args)
-    console.log('---runtime-------------\n', this.runtime)
+    return ''
   }
 }
+// Powered by 凌 @ Simplicity Studio。使用请保留此代码的注释。
+// 此代码不可用于生产环境。
+Object.defineProperty(window, 'tempExt', {
+  get() {
+    console.error('[Error] Never use tempExt as a variable.')
+  },
+  set(v) {
+    window.ExtensionLib = window.ExtensionLib || {}
+    window.ExtensionLib[v.info.extensionId] = {
+      Extension: async () => v.Extension,
+      info: v.info,
+      l10n: v.l10n
+    }
+  }
+})
 
 window.tempExt = {
   Extension: NotJS,
@@ -447,12 +545,12 @@ window.tempExt = {
   },
   l10n: {
     'zh-cn': {
-      'notjson.extensionName': 'Not.js',
-      'hcn.description': '优秀的 Gandi JSON 处理器。'
+      'notjs.extensionName': 'Not.js',
+      'notjs.description': '次世代的 Gandi JSON 处理器。'
     },
     en: {
-      'hcn.extensionName': 'Not.js',
-      'hcn.description': 'Next-generation JSON processor for Gandi IDE.'
+      'notjs.extensionName': 'Not.js',
+      'notjs.description': 'Next-generation JSON processor for Gandi IDE.'
     }
   }
 }
