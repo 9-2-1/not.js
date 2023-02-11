@@ -29,7 +29,7 @@ class JSONCache {
    * @return {[string, unknown]} [0] 键; [1] 值
    */
   cache(value) {
-    if (value === undefined) return
+    if (value === undefined) return []
     const str = JSON.stringify(value)
     if (this._container.has(str)) return this.get(str)
     if (this._container.size == this._size)
@@ -66,6 +66,8 @@ class NotJS {
         'notjs.extensionName': 'Not.js',
         'notjs.title.parse': '解析',
         'notjs.parseJSON': '解析 [json]',
+        'notjs.fromString': '解析字符串 [str] 为 JSON',
+        'notjs.fromBoolean': '解析布尔值 [bool] 为 JSON',
         'notjs.title.type': '类型',
         'notjs.asString': '[json] 作为字符串',
         'notjs.asNumber': '[json] 作为数字',
@@ -84,6 +86,8 @@ class NotJS {
         'notjs.extensionName': 'Not.js',
         'notjs.title.parse': 'Parse',
         'notjs.parseJSON': 'parse [json]',
+        'notjs.fromString': 'parse string [str] as JSON',
+        'notjs.fromBoolean': 'parse boolean [bool] as JSON',
         'notjs.title.type': 'Type',
         'notjs.asString': '[json] as string',
         'notjs.asNumber': '[json] as number',
@@ -133,6 +137,29 @@ class NotJS {
             json: {
               type: 'string',
               defaultValue: '{}'
+            }
+          }
+        },
+        {
+          // string 转换 JSON
+          opcode: 'fromString',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.fromString'),
+          arguments: {
+            str: {
+              type: 'string',
+              defaultValue: 'Hello World'
+            }
+          }
+        },
+        {
+          // boolean 转换 JSON
+          opcode: 'fromBoolean',
+          blockType: 'reporter',
+          text: this.formatMessage('notjs.fromBoolean'),
+          arguments: {
+            bool: {
+              type: 'Boolean'
             }
           }
         },
@@ -318,8 +345,24 @@ class NotJS {
    */
   parseJSON(args) {
     const v = this._parseJSON(args.json)[0]
-    if (v === undefined) return ''
+    if (v === undefined) return
     return v
+  }
+  /**
+   * string 解析为 JSON。
+   * @param {string} str 字符串。
+   * @returns {string} JSON。
+   */
+  fromString(args) {
+    return this.cache.cache(args.str)[0]
+  }
+  /**
+   * boolean 解析为 JSON。
+   * @param {string} args
+   * @returns {string} JSON。
+   */
+  fromBoolean(args) {
+    return this.cache.cache(args.bool ?? false)[0]
   }
   // 类型
   /**
@@ -329,7 +372,7 @@ class NotJS {
    */
   asString(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (v == null || ['string', 'boolean', 'number'].includes(typeof v)) {
       return String(v)
     } else return JSON.stringify(v)
@@ -341,7 +384,7 @@ class NotJS {
    */
   asNumber(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (['boolean', 'number'].includes(typeof v)) {
       return Number(v)
     } else return NaN
@@ -353,7 +396,7 @@ class NotJS {
    */
   asBoolean(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (['boolean', 'number'].includes(typeof v)) {
       return Boolean(v)
     } else if (v == null) {
@@ -367,7 +410,7 @@ class NotJS {
    */
   getType(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (v == null) {
       return 'null'
     } else if (['string', 'boolean', 'number'].includes(typeof v)) {
@@ -408,19 +451,19 @@ class NotJS {
    */
   setMember(args) {
     const v = this._parseJSON(args.json)
-    if (v.length == 0) return '' // check
+    if (v.length == 0) return // check
     if (v[1] instanceof Array) {
       const idx = parseInt(args.member)
       if (isNaN(idx) || idx < 0) return v[0] // check
       this.cache.remove(v[0])
       const c = this._parseJSON(args.value)[1]
-      if (c === undefined) return '' // check
+      if (c === undefined) return // check
       v[1][idx] = c
     } else if (v[1] instanceof Object) {
       // object
       this.cache.remove(v[0])
       const c = this._parseJSON(args.value)[1]
-      if (c === undefined) return '' // check
+      if (c === undefined) return // check
       v[1][args.member] = c
     } else {
       return v[0]
@@ -435,7 +478,7 @@ class NotJS {
    */
   removeMember(args) {
     const v = this._parseJSON(args.json)
-    if (v.length == 0) return '' // check
+    if (v.length == 0) return // check
     if (v[1] instanceof Array) {
       const idx = parseInt(args.member)
       if (v[1][idx] !== undefined) {
@@ -496,7 +539,7 @@ class NotJS {
    */
   keys(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (v instanceof Object || v instanceof Array || typeof v == 'string') {
       return this.cache.cache(Object.keys(v))[0]
     }
@@ -509,7 +552,7 @@ class NotJS {
    */
   values(args) {
     const v = this._parseJSON(args.json)[1]
-    if (v === undefined) return '' // check
+    if (v === undefined) return // check
     if (v instanceof Object || v instanceof Array || typeof v == 'string') {
       return this.cache.cache(Object.values(v))[0]
     }
