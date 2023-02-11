@@ -1,3 +1,8 @@
+
+/**
+ * Copyright(c) FurryR(凌) @ Simplicity Studio 2023.
+ * This program was under the MIT License.
+ */
 class JSONCache {
   /**
    * 构造 Cache。
@@ -517,21 +522,6 @@ class NotJS {
     return ''
   }
 }
-// Powered by 凌 @ Simplicity Studio。使用请保留此代码的注释。
-// 此代码不可用于生产环境。
-Object.defineProperty(window, 'tempExt', {
-  get() {
-    console.error('[Error] Never use tempExt as a variable.')
-  },
-  set(v) {
-    window.ExtensionLib = window.ExtensionLib || {}
-    window.ExtensionLib[v.info.extensionId] = {
-      Extension: async () => v.Extension,
-      info: v.info,
-      l10n: v.l10n
-    }
-  }
-})
 
 window.tempExt = {
   Extension: NotJS,
