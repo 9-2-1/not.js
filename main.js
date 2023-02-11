@@ -24,18 +24,18 @@ class JSONCache {
     return []
   }
   /**
-   * 更新 key。
-   * @param {string} key key。
-   * @param {unknown} value key 对应的值。
+   * 缓存。
+   * @param {unknown} value value 对应的缓存。
    * @return {[string, unknown]} [0] 键; [1] 值
    */
-  set(key, value) {
+  cache(value) {
     if (value === undefined) return
-    if (this._container.has(key)) return this.get(key)
+    const str = JSON.stringify(value)
+    if (this._container.has(str)) return this.get(str)
     if (this._container.size == this._size)
       this._container.delete(this._container.keys().next().value) // drop cache
-    this._container.set(key, value)
-    return [key, value]
+    this._container.set(str, value)
+    return [str, value]
   }
   /**
    * 删除 key。
@@ -303,8 +303,7 @@ class NotJS {
     let v = this.cache.get(json)[1]
     if (v === undefined) {
       try {
-        const p = JSON.parse(json)
-        return this.cache.set(JSON.stringify(p), p)
+        return this.cache.cache(JSON.parse(json))
       } catch (_) {
         return []
       }
@@ -391,11 +390,11 @@ class NotJS {
       // array
       const idx = parseInt(args.member)
       if (v[1][idx] === undefined) return this._parseJSON('null')[0] // check
-      return this._parseJSON(v[1][idx])[0]
+      return this.cache.cache(v[1][idx])[0]
     } else if (v[1] instanceof Object) {
       // object
       if (v[1][args.member] === undefined) return this._parseJSON('null')[0] // check
-      return this._parseJSON(v[1][args.member])[0]
+      return this.cache.cache(v[1][args.member])[0]
     } else {
       return v[0]
     }
@@ -426,7 +425,7 @@ class NotJS {
     } else {
       return v[0]
     }
-    return this.cache.set(JSON.stringify(v[1]), v[1])[0]
+    return this.cache.cache(v[1])[0]
   }
   /**
    * 删除 json 成员。
@@ -456,7 +455,7 @@ class NotJS {
     } else {
       return v[0]
     }
-    return this.cache.set(JSON.stringify(v[1]), v[1])[0]
+    return this.cache.cache(v[1])[0]
   }
   /**
    * 判断 json 成员是否存在。
@@ -468,8 +467,7 @@ class NotJS {
     const v = this._parseJSON(args.json)[1]
     if (v === undefined) return false // check
     if (v instanceof Array) {
-      const idx = parseInt(args.member)
-      return v[idx] !== undefined
+      return v[parseInt(args.member)] !== undefined
     } else if (v instanceof Object) {
       // object
       return v[args.member] !== undefined
@@ -500,10 +498,9 @@ class NotJS {
     const v = this._parseJSON(args.json)[1]
     if (v === undefined) return '' // check
     if (v instanceof Object || v instanceof Array || typeof v == 'string') {
-      const d = Object.keys(v)
-      return this.cache.set(JSON.stringify(d), d)[0]
+      return this.cache.cache(Object.keys(v))[0]
     }
-    return this.cache.set('[]', [])[0]
+    return this.cache.cache([])[0]
   }
   /**
    * 获得 json 的值。
@@ -514,10 +511,9 @@ class NotJS {
     const v = this._parseJSON(args.json)[1]
     if (v === undefined) return '' // check
     if (v instanceof Object || v instanceof Array || typeof v == 'string') {
-      const d = Object.values(v)
-      return this.cache.set(JSON.stringify(d), d)[0]
+      return this.cache.cache(Object.values(v))[0]
     }
-    return this.cache.set('[]', [])[0]
+    return this.cache.cache([])[0]
   }
 }
 
