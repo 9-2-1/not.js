@@ -4,7 +4,7 @@
  */
 class JSONCache {
   /**
-   * 构造 Cache。
+   * @brief 构造 Cache。
    * @param {number} size
    */
   constructor(size) {
@@ -15,7 +15,7 @@ class JSONCache {
     this._container = new Map()
   }
   /**
-   * 获得 key 的缓存。
+   * @brief 获得 key 的缓存。
    * @param {string} key key。
    * @returns {unknown?} 返回 [] 代表未命中缓存。
    */
@@ -24,7 +24,7 @@ class JSONCache {
     return []
   }
   /**
-   * 缓存。
+   * @brief 缓存。
    * @param {unknown} value value 对应的缓存。
    * @return {[string, unknown]} [0] 键; [1] 值
    */
@@ -38,7 +38,7 @@ class JSONCache {
     return [str, value]
   }
   /**
-   * 删除 key。
+   * @brief 删除 key。
    * @param {string} key key。
    * @returns 是否删除成功。
    */
@@ -46,7 +46,7 @@ class JSONCache {
     return this._container.delete(key)
   }
   /**
-   * 获得 cache 的大小。
+   * @brief 获得 cache 的大小。
    * @returns {number} cache 的大小。
    */
   get size() {
@@ -60,7 +60,7 @@ const iconURL =
 
 class NotJS {
   /**
-   * 构造插件。
+   * @brief 构造插件。
    * @param {unknown} runtime 官方未给出解释。
    */
   constructor(runtime) {
@@ -69,6 +69,7 @@ class NotJS {
     this._formatMessage = runtime.getFormatMessage({
       'zh-cn': {
         'notjs.extensionName': 'Not.js',
+        'notjs.getHelp': '打开帮助文档',
         'notjs.title.parse': '解析',
         'notjs.parseJSON': '解析 [json]',
         'notjs.fromString': '解析字符串 [str] 为 JSON',
@@ -88,6 +89,7 @@ class NotJS {
       },
       en: {
         'notjs.extensionName': 'Not.js',
+        'notjs.getHelp': 'Open Documentation',
         'notjs.title.parse': 'Parse',
         'notjs.parseJSON': 'parse [json]',
         'notjs.fromString': 'parse string [str] as JSON',
@@ -108,7 +110,7 @@ class NotJS {
     })
   }
   /**
-   * 格式化消息。
+   * @brief 格式化消息。
    * @param {string} id
    * @returns {string} 格式化完成的消息。
    */
@@ -120,7 +122,7 @@ class NotJS {
     })
   }
   /**
-   * 获取插件的信息。
+   * @brief 获取插件的信息。
    * @returns {unknown} 插件的信息
    */
   getInfo() {
@@ -131,6 +133,12 @@ class NotJS {
       blockIconURI: insetIconURL,
       menuIconURI: insetIconURL,
       blocks: [
+        // 帮助
+        {
+          blockType: 'button',
+          text: this.formatMessage('notjs.getHelp'),
+          onClick: this.getHelp
+        },
         // 解析
         `---${this.formatMessage('notjs.title.parse')}`,
         {
@@ -315,7 +323,7 @@ class NotJS {
     }
   }
   /**
-   * 解析 JSON 内部用到的方法。
+   * @brief 解析 JSON 内部用到的方法。
    * @param {string} json
    * @returns {[string?, unknown?]} [0] 解析后的字符串; [1] 解析后的 json
    */
@@ -330,9 +338,19 @@ class NotJS {
     }
     return [json, v]
   }
+  // 帮助
+  /**
+   * @brief 打开帮助。
+   */
+  getHelp() {
+    window.open(
+      'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882',
+      '_black'
+    )
+  }
   // 解析
   /**
-   * 解析 JSON。
+   * @brief 解析 JSON。
    * @param {string} json json。
    * @returns 解析后的字符串。
    */
@@ -342,7 +360,7 @@ class NotJS {
     return v
   }
   /**
-   * string 解析为 JSON。
+   * @brief string 解析为 JSON。
    * @param {string} str 字符串。
    * @returns {string} JSON。
    */
@@ -350,7 +368,7 @@ class NotJS {
     return this.cache.cache(args.str)[0]
   }
   /**
-   * boolean 解析为 JSON。
+   * @brief boolean 解析为 JSON。
    * @param {string} args
    * @returns {string} JSON。
    */
@@ -359,7 +377,7 @@ class NotJS {
   }
   // 类型
   /**
-   * 转换为 string。
+   * @brief 转换为 string。
    * @param {string} json json。
    * @returns {string} 转换后的 string
    */
@@ -371,7 +389,7 @@ class NotJS {
     } else return v[0]
   }
   /**
-   * 转换为 boolean。
+   * @brief 转换为 boolean。
    * @param {string} json json。
    * @returns {boolean} 转换后的 boolean。
    */
@@ -385,7 +403,7 @@ class NotJS {
     } else return v.length != 0
   }
   /**
-   * 获得 json 类型。
+   * @brief 获得 json 类型。
    * @param {string} json json。
    * @returns {string} 类型。
    */
@@ -402,7 +420,7 @@ class NotJS {
   }
   // 成员
   /**
-   * 获得 json 成员。
+   * @brief 获得 json 成员。
    * @param {string} json json。
    * @param {string} member 成员名。
    * @returns {string} json 内容。
@@ -424,7 +442,7 @@ class NotJS {
     }
   }
   /**
-   * 设定 json 成员。
+   * @brief 设定 json 成员。
    * @param {string} json json。
    * @param {string} member 成员名。
    * @param {string} value 值。
@@ -452,7 +470,7 @@ class NotJS {
     return this.cache.cache(v[1])[0]
   }
   /**
-   * 删除 json 成员。
+   * @brief 删除 json 成员。
    * @param {string} json json。
    * @param {string} member 成员名。
    * @returns {string} 变更后的 json 内容。
@@ -469,7 +487,7 @@ class NotJS {
         } else if (idx == 0) {
           v[1] = v[1].slice(1)
         } else {
-          delete v[idx]
+          v[1][idx] = null
         }
       }
     } else if (v[1] instanceof Object) {
@@ -482,7 +500,7 @@ class NotJS {
     return this.cache.cache(v[1])[0]
   }
   /**
-   * 判断 json 成员是否存在。
+   * @brief 判断 json 成员是否存在。
    * @param {string} json json。
    * @param {string} member member。
    * @returns {boolean} 是否存在。
@@ -499,7 +517,7 @@ class NotJS {
     return false
   }
   /**
-   * 获得 json 的长度。
+   * @brief 获得 json 的长度。
    * @param {string} json json。
    * @returns {number} json 长度。
    */
@@ -514,7 +532,7 @@ class NotJS {
     return NaN
   }
   /**
-   * 获得 json 的键。
+   * @brief 获得 json 的键。
    * @param {string} json json。
    * @returns {string} 键。实际上是 JSON Array。
    */
@@ -527,7 +545,7 @@ class NotJS {
     return this.cache.cache([])[0]
   }
   /**
-   * 获得 json 的值。
+   * @brief 获得 json 的值。
    * @param {string} json json。
    * @returns {string} 值。实际上是 JSON Array。
    */
@@ -551,16 +569,21 @@ window.tempExt = {
     insetIconURL,
     featured: true,
     disabled: false,
-    collaborator: 'FurryR @ Simplicity Studio'
+    collaborator: 'FurryR @ Simplicity Studio',
+    doc: 'notjs.doc'
   },
   l10n: {
     'zh-cn': {
       'notjs.extensionName': 'Not.js',
-      'notjs.description': '次世代的 Gandi JSON 处理器。'
+      'notjs.description': '次世代的 Gandi JSON 处理器。',
+      'notjs.doc':
+        'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882'
     },
     en: {
       'notjs.extensionName': 'Not.js',
-      'notjs.description': 'Next-generation JSON processor for Gandi IDE.'
+      'notjs.description': 'Next-generation JSON processor for Gandi IDE.',
+      'notjs.doc':
+        'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882'
     }
   }
 }
