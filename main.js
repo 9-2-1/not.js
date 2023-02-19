@@ -343,8 +343,7 @@ class NotJS {
    */
   getHelp() {
     window.open(
-      'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882',
-      '_black'
+      'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882'
     )
   }
   // 解析
