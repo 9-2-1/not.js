@@ -130,7 +130,6 @@ class NotJS {
       id: 'notJs' /* 扩展 id */,
       name: this.formatMessage('notjs.extensionName') /* 拓展名 */,
       color1: '#8A8A8A' /* 颜色 */,
-      blockIconURI: insetIconURL,
       menuIconURI: insetIconURL,
       blocks: [
         // 帮助
