@@ -114,7 +114,7 @@ class NotJS {
    * @param {unknown} runtime 官方未给出解释。
    */
   constructor(runtime) {
-    this.cache = new JSONCache(100)
+    this.cache = new JSONCache(50)
     this.runtime = runtime
     this._formatMessage = runtime.getFormatMessage({
       'zh-cn': {
@@ -612,7 +612,7 @@ window.tempExt = {
   info: {
     name: 'notjs.extensionName',
     description: 'notjs.description',
-    extensionId: 'notJs',
+    extensionId: 'FurryR.NotJS',
     iconURL,
     insetIconURL,
     featured: true,
