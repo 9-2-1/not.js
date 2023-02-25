@@ -32,7 +32,7 @@ class JSONCache {
   /**
    * 给所有的值 ttl - 1。
    */
-  _internal_remove(): void {
+  private _internal_remove(): void {
     const remove_list: string[] = []
     for (const [key, value] of this._container.entries()) {
       if (value.ttl <= 1) {
@@ -367,7 +367,7 @@ class NotJS {
    * @param json
    * @returns [0] 解析后的字符串; [1] 解析后的 json
    */
-  _parseJSON(json: string): [string, JSONValue] | [] {
+  private _parseJSON(json: string): [string, JSONValue] | [] {
     const v = this._cache.get(json)
     if (v.length == 0) {
       try {
