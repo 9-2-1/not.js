@@ -2,7 +2,95 @@
  * Copyright(c) FurryR(凌) @ Simplicity Studio 2023.
  * This program was under the MIT License.
  */
-import { Runtime, ExtensionInfo, ExportInfo } from './types/runtime'
+namespace Require {
+  export namespace IArgument {
+    interface ArgumentMap {
+      string: string
+      Boolean: boolean
+    }
+    type ArgumentType = keyof ArgumentMap
+    interface Argument<T extends ArgumentType = ArgumentType> {
+      type: T
+      defaultValue?: ArgumentMap[T]
+    }
+    type CommonBlock = {
+      opcode: string
+      arguments: {
+        [key: string]: Argument
+      }
+    }
+    interface BlockMap {
+      button: {
+        onClick: () => void
+      }
+      reporter: CommonBlock
+      Boolean: CommonBlock
+    }
+    type BlockType = keyof BlockMap
+    interface _BaseBlockInfo<T extends BlockType> {
+      blockType: T
+      text: string
+    }
+    export type BlockInfo<T extends BlockType = BlockType> = _BaseBlockInfo<T> &
+      BlockMap[T]
+  }
+  export namespace IRuntime {
+    interface TranslationMap {
+      [lang: string]: {
+        [key: string]: string
+      }
+    }
+    /**
+     * @brief 格式化消息返回的函数类型。
+     */
+    export type FormatMessageType = (args: {
+      id: string
+      default: string
+      description: string
+    }) => string
+    export interface Runtime {
+      /**
+       * @brief 获取格式化消息。
+       * @param args 语言表。
+       */
+      getFormatMessage(args: TranslationMap): FormatMessageType
+    }
+    /**
+     * @brief 语句块的类型描述。
+     */
+    export type BlockInfo = IArgument.BlockInfo
+    /**
+     * @brief 插件的类型描述。
+     */
+    export interface ExtensionInfo {
+      id: string /* 扩展 id */
+      name: string /* 扩展名 */
+      color1?: string /* 颜色 */
+      color2?: string /* 颜色2 */
+      menuIconURI?: string /* icon */
+      insetIconURI?: string /* icon 2 */
+      blocks: (BlockInfo | string)[] /* 语句表 */
+    }
+    export interface ExportInfo<T> {
+      Extension: { new (runtime: Runtime): T }
+      info: {
+        name: string
+        description: string
+        extensionId: string
+        iconURL: string
+        insetIconURL: string
+        featured: boolean
+        disabled: boolean
+        collaborator: string
+        doc?: string
+      }
+      l10n: TranslationMap
+    }
+  }
+}
+type Runtime = Require.IRuntime.Runtime
+type ExtensionInfo = Require.IRuntime.ExtensionInfo
+type ExportInfo<T> = Require.IRuntime.ExportInfo<T>
 type JSONValue =
   | null
   | number
