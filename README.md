@@ -6,13 +6,20 @@
 - 支持 cache 系统，避免重复解析。
 - 完全兼容其它插件。
 
+## 编译
+
+```bash
+npm i
+npm run build
+```
+
 ## 使用
 
 ### 自定义扩展
 
 请参照 [我的文章](https://www.ccw.site/post/109edca6-8fd7-4e9c-8462-dcc06ec38988)。
 
-请对 main.js 进行这个操作，然后即可在测试插件中使用。
+请对 `dist/main.js` 进行这个操作，然后即可在测试插件中使用。
 
 ### CCW 官方插件
 

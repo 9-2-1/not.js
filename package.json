@@ -1,0 +1,28 @@
+{
+  "name": "not.js",
+  "version": "1.0.0",
+  "description": "Next-generation JSON Processor for Gandi IDE.",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src",
+    "fix": "eslint ./src --fix",
+    "build": "tsc -p ./tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FurryR/not.js.git"
+  },
+  "author": "FurryR @ Simplicity Studio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FurryR/not.js/issues"
+  },
+  "homepage": "https://github.com/FurryR/not.js#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "eslint": "^8.34.0",
+    "typescript": "^4.9.5"
+  }
+}
