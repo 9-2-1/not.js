@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "sourceMap": false,
-    "module": "None",
+    "module": "ES2015",
     "noImplicitAny": true,
     "removeComments": true /* Do not emit comments to output. */,
     // "noEmit": true,                        /* Do not emit outputs. */
@@ -31,6 +31,7 @@
       //   "./types/*"
       // ]
     },
+    "preserveValueImports": true,
     "target": "ES2017",
     "outDir": "dist",
     // "declaration": true

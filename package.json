@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src",
     "fix": "eslint ./src --fix",
-    "build": "tsc -p ./tsconfig.json && uglifyjs dist/main.js -c -m -o dist/main.js"
+    "debug": "tsc -p ./tsconfig.json && uglifyjs dist/main.js -c -m -o dist/main.js && node debug/remote_test.js",
+    "build": "tsc -p ./tsconfig.json && uglifyjs dist/main.js -c -m -o dist/main.js",
+    "watch": "node debug/watch.js build",
+    "watch-debug": "node debug/watch.js debug"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,7 @@
   },
   "homepage": "https://github.com/FurryR/not.js#readme",
   "devDependencies": {
+    "@types/node": "^18.14.1",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "eslint": "^8.34.0",
