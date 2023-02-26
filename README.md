@@ -5,12 +5,24 @@
 - 语法优雅到如同在 JS 操作 JSON。
 - 支持 cache 系统，避免重复解析。
 - 完全兼容其它插件。
+- 并且，我们还提供了一个优雅的旧模板开发范式，让旧模板也能享受到 Typescript 支持(按需，我没更新不需要的积木类型的类型注解)。
 
 ## 编译
 
+### 发布版
+
 ```bash
 npm i
-npm run build
+npm run build # 单次编译。
+npm run watch (--command="编译完成执行的额外命令，可省略") # 基于监听更改的编译。
+```
+
+### 调试版
+
+```bash
+npm i
+npm run debug # 单次编译。
+npm run debug-watch (--command="编译完成执行的额外命令，可省略") # 基于监听更改的编译。
 ```
 
 ## 使用
