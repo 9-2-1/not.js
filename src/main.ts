@@ -2,7 +2,7 @@
  * Copyright(c) FurryR(凌) @ Simplicity Studio 2023.
  * This program was under the MIT License.
  */
-import type { Runtime, ExtensionInfo, ExportInfo } from 'runtime'
+import type { Runtime, ExtensionInfo, ExportInfo } from './runtime'
 type JSONType = 'null' | 'number' | 'boolean' | 'string' | 'array' | 'object'
 void ((window as Window & { tempExt?: ExportInfo<unknown> }).tempExt =
   ((): ExportInfo<unknown> => {
