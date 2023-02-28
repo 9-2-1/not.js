@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src",
     "fix": "eslint ./src --fix",
-    "debug": "tsc -p ./tsconfig.json && uglifyjs dist/main.js -c -m -o dist/main.js && node debug/remote_test.js",
-    "build": "tsc -p ./tsconfig.json && uglifyjs dist/main.js -c -m -o dist/main.js",
+    "debug": "tsc -p ./tsconfig.json && node debug/remote_test.js",
+    "build": "tsc -p ./tsconfig.json",
     "watch": "node debug/watch.js build",
     "watch-debug": "node debug/watch.js debug"
   },
@@ -27,7 +27,6 @@
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "eslint": "^8.34.0",
-    "typescript": "^4.9.5",
-    "uglify-js": "^3.17.4"
+    "typescript": "^4.9.5"
   }
 }
