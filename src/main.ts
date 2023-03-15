@@ -5,20 +5,20 @@
 import type { Runtime, ExtensionInfo, ExportInfo } from './runtime'
 type JSONType = 'null' | 'number' | 'boolean' | 'string' | 'array' | 'object'
 const iconURL =
-        'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOTIiIGhlaWdodD0iMTg1IiB2aWV3Qm94PSIwLDAsMjkyLDE4NSI+IDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNzMsLTg3KSI+IDxnIGRhdGEtcGFwZXItZGF0YT0neyJpc1BhaW50aW5nTGF5ZXIiOnRydWV9JyBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHBhdGggZD0iTTE3MywyNzJ2LTE4NWgyOTJ2MTg1eiIgZmlsbD0iIzkwOTA5MCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+IDxwYXRoIGQ9Ik0xNzMsMjcydi0xODVoMjkydjE4NXoiIGZpbGw9IiM5MDkwOTAiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNjksMTg3KSBzY2FsZSgwLjksMC45KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2UzZTNlMyIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNlM2UzZTMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IlNhbnMgU2VyaWYiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIHRleHQtYW5jaG9yPSJzdGFydCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHRzcGFuIHg9IjAiIGR5PSIwIj5Ob3QuanM8L3RzcGFuPiA8L3RleHQ+IDx0ZXh0IHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwNywxMjIpIHNjYWxlKDAuNSwwLjUpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjYWRhZGFkIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iSmV0YnJhaW5zIE1vbm8iIGZvbnQtd2VpZ2h0PSJub3JtYWwiIHRleHQtYW5jaG9yPSJzdGFydCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHRzcGFuIHg9IjAiIGR5PSIwIj57fTwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDE4LDIzNykgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPltdPC90c3Bhbj4gPC90ZXh0PiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNzUsMjM4KSBzY2FsZSgwLjQsMC40KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2FkYWRhZCIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IkpldGJyYWlucyBNb25vIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+eyJrZXkiOiJ2YWx1ZSJ9PC90c3Bhbj4gPHRzcGFuIHg9IjAiIGR5PSI0OHB4Ij57Ik5vdC5qcyI6WyJDQ1ciLCAiSlNPTiJdfTwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDIxLDI1OCkgc2NhbGUoMC42LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNkOWQ5ZDkiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJTYW5zIFNlcmlmIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+fDwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDE5LDE1Nikgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPiIgIjwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTkxLDE5MCkgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPicgJzwvdHNwYW4+IDwvdGV4dD4gPHBhdGggZD0iTTI1MywxOTloMTM0IiBmaWxsPSJub25lIiBzdHJva2U9IiNkNWQ1ZDUiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjkwLDIyMCkgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNiZGJkYmQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPnsmIzE2MDsmIzE2MDsmIzE2MDt9PC90c3Bhbj4gPC90ZXh0PiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDEsMjE4KSBzY2FsZSgwLjQsMC40KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2NiY2JjYiIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IkpldGJyYWlucyBNb25vIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+anNvbjwvdHNwYW4+IDwvdGV4dD4gPC9nPiA8L2c+PC9zdmc+',
+    'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOTIiIGhlaWdodD0iMTg1IiB2aWV3Qm94PSIwLDAsMjkyLDE4NSI+IDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNzMsLTg3KSI+IDxnIGRhdGEtcGFwZXItZGF0YT0neyJpc1BhaW50aW5nTGF5ZXIiOnRydWV9JyBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHBhdGggZD0iTTE3MywyNzJ2LTE4NWgyOTJ2MTg1eiIgZmlsbD0iIzkwOTA5MCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+IDxwYXRoIGQ9Ik0xNzMsMjcydi0xODVoMjkydjE4NXoiIGZpbGw9IiM5MDkwOTAiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNjksMTg3KSBzY2FsZSgwLjksMC45KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2UzZTNlMyIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNlM2UzZTMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IlNhbnMgU2VyaWYiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIHRleHQtYW5jaG9yPSJzdGFydCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHRzcGFuIHg9IjAiIGR5PSIwIj5Ob3QuanM8L3RzcGFuPiA8L3RleHQ+IDx0ZXh0IHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwNywxMjIpIHNjYWxlKDAuNSwwLjUpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjYWRhZGFkIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iSmV0YnJhaW5zIE1vbm8iIGZvbnQtd2VpZ2h0PSJub3JtYWwiIHRleHQtYW5jaG9yPSJzdGFydCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiID4gPHRzcGFuIHg9IjAiIGR5PSIwIj57fTwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDE4LDIzNykgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPltdPC90c3Bhbj4gPC90ZXh0PiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNzUsMjM4KSBzY2FsZSgwLjQsMC40KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2FkYWRhZCIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IkpldGJyYWlucyBNb25vIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+eyJrZXkiOiJ2YWx1ZSJ9PC90c3Bhbj4gPHRzcGFuIHg9IjAiIGR5PSI0OHB4Ij57Ik5vdC5qcyI6WyJDQ1ciLCAiSlNPTiJdfTwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDIxLDI1OCkgc2NhbGUoMC42LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNkOWQ5ZDkiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJTYW5zIFNlcmlmIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+fDwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDE5LDE1Nikgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPiIgIjwvdHNwYW4+IDwvdGV4dD4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTkxLDE5MCkgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNhZGFkYWQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPicgJzwvdHNwYW4+IDwvdGV4dD4gPHBhdGggZD0iTTI1MywxOTloMTM0IiBmaWxsPSJub25lIiBzdHJva2U9IiNkNWQ1ZDUiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4gPHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjkwLDIyMCkgc2NhbGUoMC41LDAuNSkiIGZvbnQtc2l6ZT0iNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiIGZpbGw9IiNiZGJkYmQiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJKZXRicmFpbnMgTW9ubyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCIgPiA8dHNwYW4geD0iMCIgZHk9IjAiPnsmIzE2MDsmIzE2MDsmIzE2MDt9PC90c3Bhbj4gPC90ZXh0PiA8dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDEsMjE4KSBzY2FsZSgwLjQsMC40KSIgZm9udC1zaXplPSI0MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgZmlsbD0iI2NiY2JjYiIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IkpldGJyYWlucyBNb25vIiBmb250LXdlaWdodD0ibm9ybWFsIiB0ZXh0LWFuY2hvcj0ic3RhcnQiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIiA+IDx0c3BhbiB4PSIwIiBkeT0iMCI+anNvbjwvdHNwYW4+IDwvdGV4dD4gPC9nPiA8L2c+PC9zdmc+',
   insetIconURL =
-        'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaGVpZ2h0PSI1MCIgd2lkdGg9IjUwIiB2aWV3Qm94PSIwIDAgNTAgNTAiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+IDxnIHRyYW5zZm9ybT0ibWF0cml4KC45Mzc1IDAgMCAxLjAzMjQgMTMuNSAxMy45OTkpIiBzdHlsZT0iIj4gPHRleHQgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBmb250LWZhbWlseT0iJ0pldEJyYWlucyBNb25vJywnRmlyYSBDb2RlJyxDb25zb2xhcywnQ2FzY2FkaWEgQ29kZScsbW9ub3NwYWNlIiBmb250LXNpemU9IjMwIiBzdHJva2U9InJnYigwLCAwLCAwKSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHlsZT0iZm9udC1maWxlLXVybDpub25lO2lzLWN1c3RvbS1mb250Om5vbmU7d2hpdGUtc3BhY2U6cHJlIiB4bWw6c3BhY2U9InByZXNlcnZlIj4gPHRzcGFuIHg9Ii0xMCUiIHk9IjQ1JSI+SlM8L3RzcGFuPiA8L3RleHQ+IDwvZz48L3N2Zz4='
+    'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaGVpZ2h0PSI1MCIgd2lkdGg9IjUwIiB2aWV3Qm94PSIwIDAgNTAgNTAiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+IDxnIHRyYW5zZm9ybT0ibWF0cml4KC45Mzc1IDAgMCAxLjAzMjQgMTMuNSAxMy45OTkpIiBzdHlsZT0iIj4gPHRleHQgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBmb250LWZhbWlseT0iJ0pldEJyYWlucyBNb25vJywnRmlyYSBDb2RlJyxDb25zb2xhcywnQ2FzY2FkaWEgQ29kZScsbW9ub3NwYWNlIiBmb250LXNpemU9IjMwIiBzdHJva2U9InJnYigwLCAwLCAwKSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHlsZT0iZm9udC1maWxlLXVybDpub25lO2lzLWN1c3RvbS1mb250Om5vbmU7d2hpdGUtc3BhY2U6cHJlIiB4bWw6c3BhY2U9InByZXNlcnZlIj4gPHRzcGFuIHg9Ii0xMCUiIHk9IjQ1JSI+SlM8L3RzcGFuPiA8L3RleHQ+IDwvZz48L3N2Zz4='
 class NotJS {
   /**
-         * @brief 格式化消息。
-         * @param id 消息 id。
-         * @returns 格式化完成的消息。
-         */
+   * @brief 格式化消息。
+   * @param id 消息 id。
+   * @returns 格式化完成的消息。
+   */
   formatMessage: (id: string) => string
   /**
-         * @brief 构造插件。
-         * @param runtime 运行时。
-         */
+   * @brief 构造插件。
+   * @param runtime 运行时。
+   */
   constructor(runtime: Runtime) {
     const fmt = runtime.getFormatMessage({
       'zh-cn': {
@@ -27,7 +27,6 @@ class NotJS {
         'notjs.title.parse': '解析',
         'notjs.parseJSON': '解析 [json]',
         'notjs.fromString': '解析字符串 [str] 为 JSON',
-        'notjs.fromBoolean': '解析布尔值 [bool] 为 JSON',
         'notjs.title.type': '类型',
         'notjs.asString': '[json] 作为字符串',
         'notjs.asBoolean': '[json] 作为布尔值',
@@ -47,7 +46,6 @@ class NotJS {
         'notjs.title.parse': 'Parse',
         'notjs.parseJSON': 'parse [json]',
         'notjs.fromString': 'parse string [str] as JSON',
-        'notjs.fromBoolean': 'parse boolean [bool] as JSON',
         'notjs.title.type': 'Type',
         'notjs.asString': '[json] as string',
         'notjs.asBoolean': '[json] as boolean',
@@ -66,9 +64,9 @@ class NotJS {
       fmt({ id, default: id, description: id })
   }
   /**
-         * @brief 获取插件的信息。
-         * @returns 插件的信息
-         */
+   * @brief 获取插件的信息。
+   * @returns 插件的信息
+   */
   getInfo(): ExtensionInfo {
     return {
       id: 'FurryR.NotJS' /* 扩展 id */,
@@ -106,17 +104,6 @@ class NotJS {
             str: {
               type: 'string',
               defaultValue: 'Hello World'
-            }
-          }
-        },
-        {
-          // boolean 转换 JSON
-          opcode: 'fromBoolean',
-          blockType: 'reporter',
-          text: this.formatMessage('notjs.fromBoolean'),
-          arguments: {
-            bool: {
-              type: 'Boolean'
             }
           }
         },
@@ -267,10 +254,10 @@ class NotJS {
     }
   }
   /**
-         * @brief 解析 JSON 内部用到的方法。
-         * @param json
-         * @returns [0] 解析后的字符串; [1] 解析后的 json
-         */
+   * @brief 解析 JSON 内部用到的方法。
+   * @param json
+   * @returns [0] 解析后的字符串; [1] 解析后的 json
+   */
   private _parseJSON(json: string): unknown | undefined {
     try {
       return JSON.parse(json)
@@ -280,8 +267,8 @@ class NotJS {
   }
   // 帮助
   /**
-         * @brief 打开帮助。
-         */
+   * @brief 打开帮助。
+   */
   getHelp() {
     window.open(
       'https://www.ccw.site/post/9cb88c31-c4eb-4244-a412-625e33ca6882'
@@ -289,54 +276,46 @@ class NotJS {
   }
   // 解析
   /**
-         * @brief 解析 JSON。
-         * @param json json。
-         * @returns 解析后的字符串。
-         */
+   * @brief 解析 JSON。
+   * @param json json。
+   * @returns 解析后的字符串。
+   */
   parseJSON({ json }: { json: string }): string | undefined {
     const v = this._parseJSON(json)
     if (v === undefined) return
     return JSON.stringify(v)
   }
   /**
-         * @brief string 解析为 JSON。
-         * @param str 字符串。
-         * @returns JSON。
-         */
+   * @brief string 解析为 JSON。
+   * @param str 字符串。
+   * @returns JSON。
+   */
   fromString({ str }: { str: string }): string {
     return JSON.stringify(str)
   }
-  /**
-         * @brief boolean 解析为 JSON。
-         * @param bool 值。
-         * @returns JSON。
-         */
-  fromBoolean({ bool }: { bool?: boolean }): string | undefined {
-    return bool == undefined ? undefined : JSON.stringify(bool)
-  }
   // 类型
   /**
-         * @brief 转换为 string。
-         * @param json json。
-         * @returns 转换后的 string
-         */
+   * @brief 转换为 string。
+   * @param json json。
+   * @returns 转换后的 string
+   */
   asString({ json }: { json: string }): string | undefined {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
     if (
       v == null ||
-            typeof v == 'string' ||
-            typeof v == 'boolean' ||
-            typeof v == 'number'
+      typeof v == 'string' ||
+      typeof v == 'boolean' ||
+      typeof v == 'number'
     ) {
       return String(v)
     } else return JSON.stringify(v)
   }
   /**
-         * @brief 转换为 boolean。
-         * @param json json。
-         * @returns 转换后的 boolean。
-         */
+   * @brief 转换为 boolean。
+   * @param json json。
+   * @returns 转换后的 boolean。
+   */
   asBoolean({ json }: { json: string }): boolean | undefined {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
@@ -344,15 +323,14 @@ class NotJS {
       return Boolean(v)
     } else if (v == null) {
       return false
-    } else if (typeof v == 'string' || v instanceof Array)
-      return v.length != 0
+    } else if (typeof v == 'string' || v instanceof Array) return v.length != 0
     else return Object.keys(v).length != 0
   }
   /**
-         * @brief 获得 json 类型。
-         * @param json json。
-         * @returns 类型。
-         */
+   * @brief 获得 json 类型。
+   * @param json json。
+   * @returns 类型。
+   */
   getType({ json }: { json: string }): undefined | JSONType {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
@@ -360,8 +338,8 @@ class NotJS {
       return 'null'
     } else if (
       typeof v == 'string' ||
-            typeof v == 'boolean' ||
-            typeof v == 'number'
+      typeof v == 'boolean' ||
+      typeof v == 'number'
     ) {
       return typeof v as JSONType
     } else if (v instanceof Array) {
@@ -370,18 +348,18 @@ class NotJS {
   }
   // 成员
   /**
-         * @brief 获得 json 成员。
-         * @param json json。
-         * @param member 成员名。
-         * @returns json 内容。
-         */
+   * @brief 获得 json 成员。
+   * @param json json。
+   * @param member 成员名。
+   * @returns json 内容。
+   */
   getMember({
     json,
     member
   }: {
-          json: string
-          member: string
-        }): undefined | string {
+    json: string
+    member: string
+  }): undefined | string {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
     if (v instanceof Array || typeof v == 'string') {
@@ -399,21 +377,21 @@ class NotJS {
     }
   }
   /**
-         * @brief 设定 json 成员。
-         * @param json json。
-         * @param member 成员名。
-         * @param value 值。
-         * @returns 变更后的 json 内容。
-         */
+   * @brief 设定 json 成员。
+   * @param json json。
+   * @param member 成员名。
+   * @param value 值。
+   * @returns 变更后的 json 内容。
+   */
   setMember({
     json,
     member,
     value
   }: {
-          json: string
-          member: string
-          value: string
-        }): undefined | string {
+    json: string
+    member: string
+    value: string
+  }): undefined | string {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
     if (v instanceof Array) {
@@ -433,18 +411,18 @@ class NotJS {
     return JSON.stringify(v)
   }
   /**
-         * @brief 删除 json 成员。
-         * @param json json。
-         * @param member 成员名。
-         * @returns 变更后的 json 内容。
-         */
+   * @brief 删除 json 成员。
+   * @param json json。
+   * @param member 成员名。
+   * @returns 变更后的 json 内容。
+   */
   removeMember({
     json,
     member
   }: {
-          json: string
-          member: string
-        }): undefined | string {
+    json: string
+    member: string
+  }): undefined | string {
     let v = this._parseJSON(json)
     if (v === undefined) return // check
     if (v instanceof Array) {
@@ -467,18 +445,18 @@ class NotJS {
     return JSON.stringify(v)
   }
   /**
-         * @brief 判断 json 成员是否存在。
-         * @param json json。
-         * @param member member。
-         * @returns 是否存在。
-         */
+   * @brief 判断 json 成员是否存在。
+   * @param json json。
+   * @param member member。
+   * @returns 是否存在。
+   */
   exists({
     json,
     member
   }: {
-          json: string
-          member: string
-        }): undefined | boolean {
+    json: string
+    member: string
+  }): undefined | boolean {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
     if (v instanceof Array) {
@@ -490,10 +468,10 @@ class NotJS {
     return false
   }
   /**
-         * @brief 获得 json 的长度。
-         * @param json json。
-         * @returns json 长度。
-         */
+   * @brief 获得 json 的长度。
+   * @param json json。
+   * @returns json 长度。
+   */
   length({ json }: { json: string }): undefined | number {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
@@ -505,10 +483,10 @@ class NotJS {
     return
   }
   /**
-         * @brief 获得 json 的键。
-         * @param json json。
-         * @returns 键。实际上是 JSON Array。
-         */
+   * @brief 获得 json 的键。
+   * @param json json。
+   * @returns 键。实际上是 JSON Array。
+   */
   keys({ json }: { json: string }): undefined | string {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
@@ -518,10 +496,10 @@ class NotJS {
     return '[]'
   }
   /**
-         * @brief 获得 json 的值。
-         * @param json json。
-         * @returns 值。实际上是 JSON Array。
-         */
+   * @brief 获得 json 的值。
+   * @param json json。
+   * @returns 值。实际上是 JSON Array。
+   */
   values({ json }: { json: string }): undefined | string {
     const v = this._parseJSON(json)
     if (v === undefined) return // check
@@ -547,11 +525,11 @@ void ((window as Window & { tempExt?: ExportInfo<unknown> }).tempExt = {
   l10n: {
     'zh-cn': {
       'notjs.extensionName': 'Not.js',
-      'notjs.description': '次世代的 Gandi JSON 处理器。'
+      'notjs.description': '更快的 Gandi JSON 处理器。'
     },
     en: {
       'notjs.extensionName': 'Not.js',
-      'notjs.description': 'Next-generation JSON processor for Gandi IDE.'
+      'notjs.description': 'Faster JSON processor for Gandi IDE.'
     }
   }
 })
