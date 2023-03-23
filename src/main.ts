@@ -428,13 +428,7 @@ class NotJS {
     if (v instanceof Array) {
       const idx = parseInt(member)
       if (v[idx] !== undefined) {
-        if (idx == v.length - 1) {
-          v = v.slice(0, -1)
-        } else if (idx == 0) {
-          v = v.slice(1)
-        } else {
-          v[idx] = null
-        }
+        v = v.slice(0, idx).concat(v.slice(idx + 1))
       }
     } else if (v instanceof Object) {
       // object
