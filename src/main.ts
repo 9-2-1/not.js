@@ -280,9 +280,9 @@ class NotJS {
    * @param json json。
    * @returns 解析后的字符串。
    */
-  parseJSON({ json }: { json: string }): string | undefined {
+  parseJSON({ json }: { json: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return
+    if (v === undefined) return ''
     return JSON.stringify(v)
   }
   /**
@@ -299,9 +299,9 @@ class NotJS {
    * @param json json。
    * @returns 转换后的 string
    */
-  asString({ json }: { json: string }): string | undefined {
+  asString({ json }: { json: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (
       v == null ||
       typeof v == 'string' ||
@@ -316,9 +316,9 @@ class NotJS {
    * @param json json。
    * @returns 转换后的 boolean。
    */
-  asBoolean({ json }: { json: string }): boolean | undefined {
+  asBoolean({ json }: { json: string }): boolean {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return false // check
     if (typeof v == 'boolean' || typeof v == 'number') {
       return Boolean(v)
     } else if (v == null) {
@@ -331,9 +331,9 @@ class NotJS {
    * @param json json。
    * @returns 类型。
    */
-  getType({ json }: { json: string }): undefined | JSONType {
+  getType({ json }: { json: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (v == null) {
       return 'null'
     } else if (
@@ -353,15 +353,9 @@ class NotJS {
    * @param member 成员名。
    * @returns json 内容。
    */
-  getMember({
-    json,
-    member
-  }: {
-    json: string
-    member: string
-  }): undefined | string {
+  getMember({ json, member }: { json: string; member: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (v instanceof Array || typeof v == 'string') {
       // array
       const idx = parseInt(member)
@@ -391,19 +385,20 @@ class NotJS {
     json: string
     member: string
     value: string
-  }): undefined | string {
+  }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (v instanceof Array) {
       const idx = parseInt(member)
       if (isNaN(idx) || idx < 0) return JSON.stringify(v) // check
       const c = this._parseJSON(value)
-      if (c === undefined) return // check
+      if (c === undefined) return '' // check
       v[idx] = c
     } else if (v instanceof Object) {
       // object
       const c = this._parseJSON(value)
-      if (c === undefined) return // check
+      if (c === undefined)
+        return '' // check
       ;(v as { [key: string]: unknown })[member] = c
     } else {
       return JSON.stringify(v)
@@ -416,31 +411,17 @@ class NotJS {
    * @param member 成员名。
    * @returns 变更后的 json 内容。
    */
-  removeMember({
-    json,
-    member
-  }: {
-    json: string
-    member: string
-  }): undefined | string {
-    let v = this._parseJSON(json)
-    if (v === undefined) return // check
+  removeMember({ json, member }: { json: string; member: string }): string {
+    const v = this._parseJSON(json)
+    if (v === undefined) return '' // check
     if (v instanceof Array) {
       const idx = parseInt(member)
       if (v[idx] !== undefined) {
-        if (idx == v.length - 1) {
-          v = v.slice(0, -1)
-        } else if (idx == 0) {
-          v = v.slice(1)
-        } else {
-          v[idx] = null
-        }
+        v.splice(idx, 1)
       }
     } else if (v instanceof Object) {
       // object
       delete (v as { [key: string]: unknown })[member]
-    } else {
-      return JSON.stringify(v)
     }
     return JSON.stringify(v)
   }
@@ -450,15 +431,9 @@ class NotJS {
    * @param member member。
    * @returns 是否存在。
    */
-  exists({
-    json,
-    member
-  }: {
-    json: string
-    member: string
-  }): undefined | boolean {
+  exists({ json, member }: { json: string; member: string }): boolean {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return false // check
     if (v instanceof Array) {
       return v[parseInt(member)] !== undefined
     } else if (v instanceof Object) {
@@ -472,24 +447,24 @@ class NotJS {
    * @param json json。
    * @returns json 长度。
    */
-  length({ json }: { json: string }): undefined | number {
+  length({ json }: { json: string }): '' | number {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (v instanceof Array || typeof v == 'string') {
       return v.length
     } else if (v instanceof Object) {
       return Object.keys(v).length
     }
-    return
+    return ''
   }
   /**
    * @brief 获得 json 的键。
    * @param json json。
    * @returns 键。实际上是 JSON Array。
    */
-  keys({ json }: { json: string }): undefined | string {
+  keys({ json }: { json: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (typeof v == 'string' || v instanceof Object) {
       return JSON.stringify(Object.keys(v))
     }
@@ -500,9 +475,9 @@ class NotJS {
    * @param json json。
    * @returns 值。实际上是 JSON Array。
    */
-  values({ json }: { json: string }): undefined | string {
+  values({ json }: { json: string }): string {
     const v = this._parseJSON(json)
-    if (v === undefined) return // check
+    if (v === undefined) return '' // check
     if (v instanceof Object || typeof v == 'string') {
       return JSON.stringify(Object.values(v))
     }
